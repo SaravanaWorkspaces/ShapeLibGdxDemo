@@ -25,6 +25,8 @@ public class InteractiveDemo implements ApplicationListener {
     ModelInstance ground;
     ModelInstance ball;
 
+    boolean collision;
+
     @Override
     public void create() {
         modelBatch = new ModelBatch();
@@ -34,24 +36,33 @@ public class InteractiveDemo implements ApplicationListener {
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
         cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(10f, 0f, 10f);
-        cam.lookAt(0, 7f, 0);
+        cam.position.set(3f, 7f, 10f);
+        cam.lookAt(0f, 4f, 0f);
         cam.update();
 
         instances = new Array<ModelInstance>();
 
         ground = new ModelInstance(Shapes.drawShapes(Shapes.GROUND), "ground");
+
         ball = new ModelInstance(Shapes.drawShapes(Shapes.SPHERE), "ball");
-        //ball.transform.setToTranslation(0, 0, 0);
+        ball.transform.setToTranslation(0, 9f, 0);
 
         instances = new Array<ModelInstance>();
-        //instances.add(ground);
+        instances.add(ground);
         instances.add(ball);
 
     }
 
 
     public void render() {
+
+        final float delta = Math.min(1f/30f, Gdx.graphics.getDeltaTime());
+
+        if (!collision) {
+            ball.transform.translate(0f, -delta, 0f);
+            //collision = checkCollision();
+        }
+
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
@@ -59,7 +70,9 @@ public class InteractiveDemo implements ApplicationListener {
         modelBatch.render(instances, environment);
         modelBatch.end();
     }
-
+    boolean checkCollision() {
+        return false;
+    }
     @Override
     public void pause() {
 

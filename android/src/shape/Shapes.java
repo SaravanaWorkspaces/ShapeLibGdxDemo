@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 public class Shapes {
     public static final int GROUND = 0;
     public static final int SPHERE = 1;
+    public static final int CYLINDER = 3;
 
 
     public static Model drawShapes(int type) {
@@ -48,6 +49,18 @@ public class Shapes {
                 return modelBuilder.end();
 
             case SPHERE:
+                modelBuilder.begin();
+                modelBuilder.node().id = "ball";
+                modelBuilder.part("sphere",
+                        GL20.GL_TRIANGLES,
+                        Usage.Position
+                                | Usage.Normal,
+                        new Material(ColorAttribute.createDiffuse(Color.GREEN)))
+                        .sphere(1f, 1f, 1f, 10, 10);
+
+                return modelBuilder.end();
+
+            case CYLINDER:
                 modelBuilder.begin();
                 modelBuilder.node().id = "ball";
                 modelBuilder.part("sphere",
