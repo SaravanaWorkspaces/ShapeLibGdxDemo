@@ -24,6 +24,7 @@ public class InteractiveDemo implements ApplicationListener {
 
     ModelInstance ground;
     ModelInstance ball;
+    ModelInstance cylinder;
 
     boolean collision;
 
@@ -45,23 +46,23 @@ public class InteractiveDemo implements ApplicationListener {
         ground = new ModelInstance(Shapes.drawShapes(Shapes.GROUND), "ground");
 
         ball = new ModelInstance(Shapes.drawShapes(Shapes.SPHERE), "ball");
-        ball.transform.setToTranslation(0, 9f, 0);
+        ball.transform.setToTranslation(0f, 9f, 0f);
+
+        cylinder = new ModelInstance(Shapes.drawShapes(Shapes.CYLINDER), "cylinder");
+        cylinder.transform.setTranslation(0f, 7f, 0f);
 
         instances = new Array<ModelInstance>();
         instances.add(ground);
         instances.add(ball);
+        instances.add(cylinder);
 
     }
 
 
     public void render() {
 
-        final float delta = Math.min(1f/30f, Gdx.graphics.getDeltaTime());
-
-        if (!collision) {
-            ball.transform.translate(0f, -delta, 0f);
-            //collision = checkCollision();
-        }
+        final float delta = Math.min(1f / 30f, Gdx.graphics.getDeltaTime());
+        ball.transform.translate(0f, -delta, 0f);
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -70,9 +71,11 @@ public class InteractiveDemo implements ApplicationListener {
         modelBatch.render(instances, environment);
         modelBatch.end();
     }
+
     boolean checkCollision() {
         return false;
     }
+
     @Override
     public void pause() {
 

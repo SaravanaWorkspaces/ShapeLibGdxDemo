@@ -62,13 +62,12 @@ public class Shapes {
 
             case CYLINDER:
                 modelBuilder.begin();
-                modelBuilder.node().id = "ball";
-                modelBuilder.part("sphere",
-                        GL20.GL_TRIANGLES,
-                        Usage.Position
-                                | Usage.Normal,
-                        new Material(ColorAttribute.createDiffuse(Color.GREEN)))
-                        .sphere(1f, 1f, 1f, 10, 10);
+                modelBuilder.node().id = "cylinder";
+
+                modelBuilder.part("cylinder",
+                        GL20.GL_TRIANGLES, Usage.Position | Usage.Normal,
+                        new Material(ColorAttribute.createDiffuse(Color.WHITE)))
+                        .cylinder(1.5f, 2f, 1f, 10);
 
                 return modelBuilder.end();
         }
