@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
  * @category Impiger
  * @package shape
  * @copyright Copyright (C) 2014 Impiger. All rights reserved.
- * @license http://www.apache.org/licenses/LICENSE-2.0
  */
 public class Shapes {
     public static final int GROUND = 0;
@@ -39,11 +38,11 @@ public class Shapes {
             case GROUND:
                 modelBuilder.begin();
                 modelBuilder.node().id = "ground";
+
                 modelBuilder.part("box",
                         GL20.GL_TRIANGLES,
-                        Usage.Position
-                                | Usage.Normal,
-                        new Material(ColorAttribute.createDiffuse(Color.YELLOW)))
+                        Usage.Position | Usage.Normal,
+                        new Material(ColorAttribute.createDiffuse(Color.FOREST)))
                         .box(5f, 1f, 5f);
 
                 return modelBuilder.end();
@@ -51,10 +50,9 @@ public class Shapes {
             case SPHERE:
                 modelBuilder.begin();
                 modelBuilder.node().id = "ball";
+
                 modelBuilder.part("sphere",
-                        GL20.GL_TRIANGLES,
-                        Usage.Position
-                                | Usage.Normal,
+                        GL20.GL_TRIANGLES, Usage.Position | Usage.Normal,
                         new Material(ColorAttribute.createDiffuse(Color.GREEN)))
                         .sphere(1f, 1f, 1f, 10, 10);
 
@@ -66,7 +64,7 @@ public class Shapes {
 
                 modelBuilder.part("cylinder",
                         GL20.GL_TRIANGLES, Usage.Position | Usage.Normal,
-                        new Material(ColorAttribute.createDiffuse(Color.WHITE)))
+                        new Material(ColorAttribute.createDiffuse(Color.YELLOW)))
                         .cylinder(1.5f, 2f, 1f, 10);
 
                 return modelBuilder.end();
