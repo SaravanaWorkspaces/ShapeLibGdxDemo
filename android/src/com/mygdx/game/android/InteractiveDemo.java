@@ -32,17 +32,14 @@ public class InteractiveDemo implements ApplicationListener {
 
     Environment environment;
 
+    Model groundModel;
+    Model ballModel;
+    Model cylinderModel;
+
     ModelInstance groundModelInstance;
     ModelInstance ballModelInstance;
     ModelInstance cylinderModelInstance;
 
-    Model groundModel;
-
-    Model ballModel;
-
-    Model cylinderModel;
-
-    int iterator = 0;
 
     @Override
     public void create() {
@@ -71,20 +68,14 @@ public class InteractiveDemo implements ApplicationListener {
         cylinderModelInstance = new ModelInstance(cylinderModel, "cylinder");
         cylinderModelInstance.transform.setTranslation(0f, 7f, 0f);
 
-
         instances = new Array<ModelInstance>();
         instances.add(groundModelInstance);
-
 
     }
 
     public void render() {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
-        iterator++;
-
-        cam.rotate(new Vector3(20,0,0), 0);
 
         modelBatch.begin(cam);
         modelBatch.render(instances, environment);
@@ -112,8 +103,4 @@ public class InteractiveDemo implements ApplicationListener {
 
     }
 
-    private int getState() {
-
-        return 0;
-    }
 }
