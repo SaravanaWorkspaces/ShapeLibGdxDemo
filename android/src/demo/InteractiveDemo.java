@@ -1,11 +1,7 @@
-package com.mygdx.game.android;
-
-import android.util.Log;
+package demo;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -14,14 +10,22 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 import shape.Shapes;
 
+/**
+ * This class renders shapes with ModelInstances. The shapes are rendered by
+ * ModelBuilder. Every model node with ID. Shapes are cylinder, Ground, Ball.
+ * <p/>
+ * InteractiveDemo.java
+ *
+ * @author saravanakumar.chinraj
+ * @version 1.0
+ * @company Impiger
+ * @package com.mygdx.game.android
+ * @copyright Copyright (C) 2015 Impiger. All rights reserved.
+ */
 public class InteractiveDemo implements ApplicationListener {
 
     private static final String TAG = "InteractiveDemo";
@@ -70,6 +74,8 @@ public class InteractiveDemo implements ApplicationListener {
 
         instances = new Array<ModelInstance>();
         instances.add(groundModelInstance);
+        instances.add(ballModelInstance);
+        instances.add(cylinderModelInstance);
 
     }
 
