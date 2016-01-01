@@ -18,7 +18,7 @@ import shape.Shapes;
  * This class renders shapes with ModelInstances. The shapes are rendered by
  * ModelBuilder. Every model node with ID. Shapes are cylinder, Ground, Ball.
  * <p/>
- * InteractiveDemo.java
+ * LibGdxShapes.java
  *
  * @author saravanakumar.chinraj
  * @version 1.0
@@ -26,9 +26,9 @@ import shape.Shapes;
  * @package com.mygdx.game.android
  * @copyright Copyright (C) 2015 Impiger. All rights reserved.
  */
-public class InteractiveDemo implements ApplicationListener {
+public class LibGdxShapes implements ApplicationListener {
 
-    private static final String TAG = "InteractiveDemo";
+    private static final String TAG = "LibGdxShapes";
     PerspectiveCamera cam;
     ModelBatch modelBatch;
 

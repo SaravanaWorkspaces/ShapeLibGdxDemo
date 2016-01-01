@@ -5,14 +5,15 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-import demo.InteractiveDemo;
-import demo.ShaderDemo;
+import demo.CameraRotatorDemo;
+import demo.ModelHandling3D;
 
 public class AndroidLauncher extends AndroidApplication {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        initialize(new ShaderDemo(), config);
+        initialize(new ModelHandling3D(), config);
+        //initialize(new CameraRotatorDemo(), config);
     }
 }

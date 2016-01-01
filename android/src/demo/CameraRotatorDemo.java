@@ -55,7 +55,7 @@ public class CameraRotatorDemo implements ApplicationListener {
         modelBatch = new ModelBatch();
 
         cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(getVector(X_ROTATION));
+        cam.position.set(getVector(XY_ROTATION));
         cam.lookAt(0, 0, 0);
         cam.near = 1f;
         cam.far = 300f;
@@ -92,6 +92,7 @@ public class CameraRotatorDemo implements ApplicationListener {
 
     @Override
     public void resize(int width, int height) {
+
     }
 
     @Override
