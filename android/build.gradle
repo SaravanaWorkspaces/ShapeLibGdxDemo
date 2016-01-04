@@ -112,3 +112,6 @@ idea {
 }
 dependencies {
 }
+task appStart(type: Exec, dependsOn: 'installDebug') {
+    commandLine 'adb', 'shell', 'am', 'start', '-n', 'com.mygdx.game.android' + '.LauncherActivity'
+}

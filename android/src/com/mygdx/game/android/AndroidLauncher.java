@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-import demo.CameraRotatorDemo;
 import demo.ModelHandling3D;
 
 public class AndroidLauncher extends AndroidApplication {
@@ -14,6 +13,5 @@ public class AndroidLauncher extends AndroidApplication {
         super.onCreate(savedInstanceState);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         initialize(new ModelHandling3D(), config);
-        //initialize(new CameraRotatorDemo(), config);
     }
 }

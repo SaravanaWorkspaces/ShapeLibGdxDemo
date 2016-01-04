@@ -1,7 +1,5 @@
 package demo;
 
-import android.util.Log;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -18,18 +16,17 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
+import controller.CameraController;
 import utils.ColorUtils;
 
 /**
  * This handles the class to render the objects on the screen.
  * 1. Changing the model material color By @{@link ModelHandling3D#changeObjectColor()}
  * 2. Changing the model rotation by {@link ModelHandling3D#changeRotation()}
- * <p/>
- * ModelHandling3D.java
+ * </p>
  *
  * @author saravanakumar.chinra
  * @version 1.0
@@ -41,10 +38,12 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
 
     private static final String TAG = "ModelHandling3D";
 
-    private static final String inputFile = "test/boxanim.g3dj";
+    private static final String inputFile = "test/box3d.g3dj";
     private final int COLOR = 0;
     private final int POSITION = 1;
     private final int ROTATION = 3;
+    private final int SCALING = 4;
+    private final int CAMERA = 5;
 
 
     public PerspectiveCamera cam;
@@ -52,13 +51,14 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
     public AssetManager assets;
     public Array<ModelInstance> instances = new Array<ModelInstance>();
     public Environment environment;
-    public ModelInstance teapot;
-    AnimationController controller;
+    public ModelInstance modelInstance;
+    CameraController cameraController;
     private int colorIterator = 0;
     private int colorArraySize = 0;
     private SpriteBatch batch;
     private BitmapFont font;
     private String selectedOperation = "";
+    private boolean isMovingUp = false;
 
     @Override
     public void create() {
@@ -68,18 +68,13 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-        cam = new PerspectiveCamera(80, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(0f, 7f, 10f);
-        cam.lookAt(0, 0, 0);
-        cam.near = 1f;
-        cam.far = 300f;
-        cam.update();
+        cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        cameraController = new CameraController(cam);
 
         assets = new AssetManager();
         assets.load(inputFile, Model.class);
 
         colorArraySize = ColorUtils.getColorArraySize();
-        colorArraySize = 360;
 
         Gdx.input.setInputProcessor(this);
 
@@ -96,8 +91,9 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        if (assets.update())
-            performAction(ROTATION);
+        if (assets.update()) {
+            performAction(CAMERA);
+        }
 
         modelBatch.begin(cam);
         modelBatch.render(instances, environment);
@@ -146,20 +142,40 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
                 changeObjectPosition();
                 break;
             case ROTATION:
-                selectedOperation = "Rotate the View ";
+                selectedOperation = "Rotate the View";
                 changeRotation();
+                break;
+            case SCALING:
+                selectedOperation = "Scaling the view";
+                changeScaling();
+                break;
+            case CAMERA:
+                selectedOperation = "Moving Camera Up/Down";
+                renderObject();
+                cameraController.updateCamera();
+                //changeCameraPosition();
                 break;
         }
     }
+
+    /**
+     * This method just renders the 3D object on the screen.
+     */
+    private void renderObject() {
+        instances = new Array<ModelInstance>();
+        modelInstance = new ModelInstance(assets.get(inputFile, Model.class));
+        instances.add(modelInstance);
+    }
+
 
     /**
      * Changing position by vector
      */
     private void changeObjectPosition() {
         Model model = assets.get(inputFile, Model.class);
-        teapot = new ModelInstance(model, new Vector3(colorIterator, 0, 5));
+        modelInstance = new ModelInstance(model, new Vector3(colorIterator, 0, 0));
         instances = new Array<ModelInstance>();
-        instances.add(teapot);
+        instances.add(modelInstance);
     }
 
     /**
@@ -167,11 +183,11 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
      */
     private void changeObjectColor() {
         Model model = assets.get(inputFile, Model.class);
-        teapot = new ModelInstance(model);
-        teapot.materials.get(0).set(ColorAttribute.
+        modelInstance = new ModelInstance(model);
+        modelInstance.materials.get(0).set(ColorAttribute.
                 createDiffuse(ColorUtils.color[colorIterator]));
         instances = new Array<ModelInstance>();
-        instances.add(teapot);
+        instances.add(modelInstance);
     }
 
     /**
@@ -179,10 +195,35 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
      */
     private void changeRotation() {
         instances = new Array<ModelInstance>();
-        teapot = new ModelInstance(assets.get(inputFile, Model.class));
-        controller = new AnimationController(teapot);
-        controller.setAnimation("Base stack");
-        instances.add(teapot);
+        modelInstance = new ModelInstance(assets.get(inputFile, Model.class));
+        instances.add(modelInstance);
+    }
+
+    /**
+     * Changing object scaling.
+     */
+    private void changeScaling() {
+        instances = new Array<ModelInstance>();
+        modelInstance = new ModelInstance(assets.get(inputFile, Model.class));
+        instances.add(modelInstance);
+    }
+
+    /**
+     * Moving camera position towards up and Down.
+     */
+    private void changeCameraPosition() {
+        float zCameraPosition = cam.position.y;
+        if (isMovingUp) {
+            zCameraPosition += 0.1;
+            if (zCameraPosition > 20)
+                isMovingUp = false;
+        } else {
+            zCameraPosition -= 0.1;
+            if (zCameraPosition < 1)
+                isMovingUp = true;
+        }
+        cam.position.set(10, zCameraPosition, 10);
+        cam.update();
     }
 
     @Override
@@ -203,7 +244,7 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
+        cameraController.updateCamera();
         return false;
     }
 
@@ -212,7 +253,6 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
 
         return false;
     }
-
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
@@ -233,4 +273,5 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
     public boolean scrolled(int amount) {
         return false;
     }
+
 }
