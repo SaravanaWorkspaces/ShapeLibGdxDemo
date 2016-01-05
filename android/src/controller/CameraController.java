@@ -1,9 +1,12 @@
 package controller;
 
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Vector3;
+
+import utils.Constants;
 
 /**
- * This handles camera event to move up/down/rounds right/rounds left.
+ * This handles camera event to move up/down/rotates around the object.
  * <p/>
  *
  * @author saravanakumar.chinraj
@@ -14,16 +17,24 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
  */
 public class CameraController {
 
-    private final int UP_DOWN = 0;
-    private final int ROTATE = 1;
 
-    private float xPosition = 10.0f;
-    private float yPosition = 10.0f;
+    private static final String TAG = "CameraController";
+    /* Moving camera around the object */
+    int camPathAngle = 0;
+    /* Rotates around the object */
+    private boolean isAround = false;
+    /* Camera Positions */
+    private float xPosition = 5.0f;
+    private float yPosition = 0.0f;
     private float zPosition = 10.0f;
 
-    private boolean isMovingUp = false;
-
     private PerspectiveCamera mPerspectiveCamera;
+
+    /* Swaps the camera rotation on Every 2 full rotation */
+    private int swapCount = 0;
+
+    /* Moves UpDown Camera */
+    private boolean isMovingUp = false;
 
     public CameraController(PerspectiveCamera perspectiveCamera) {
         this.mPerspectiveCamera = perspectiveCamera;
@@ -34,13 +45,20 @@ public class CameraController {
         mPerspectiveCamera.update();
     }
 
-    /**
-     * updates camera coordinates on the screen.
-     */
-    public void updateCamera() {
-        changeCameraPosition();
+    public void changeCameraRotation() {
+        isAround = !isAround;
     }
 
+    /**
+     * {@link CameraController#isAround} checks and rotates around the object. If its true.
+     */
+    public void updateCamera() {
+        if (isAround)
+            rotateAround();
+        else
+            changeCameraPosition();
+
+    }
 
     /**
      * Moving camera position towards up and Down.
@@ -56,7 +74,28 @@ public class CameraController {
             if (yPosition < 1)
                 isMovingUp = true;
         }
+
         mPerspectiveCamera.position.set(xPosition, yPosition, zPosition);
+        mPerspectiveCamera.update();
+    }
+
+    /**
+     * Rotating the camera around the object.
+     */
+    private void rotateAround() {
+        if (camPathAngle < Constants.FULL_ROTATION) {
+            camPathAngle++;
+        } else {
+            swapCount++;
+            camPathAngle = 0;
+        }
+        mPerspectiveCamera.position.set(xPosition, yPosition, zPosition);
+        if (swapCount % 2 == 0) {
+            mPerspectiveCamera.rotate(Vector3.Y, camPathAngle);
+        } else {
+            mPerspectiveCamera.rotate(Vector3.X, camPathAngle);
+        }
+        mPerspectiveCamera.lookAt(new Vector3(0, 0, 0));
         mPerspectiveCamera.update();
     }
 

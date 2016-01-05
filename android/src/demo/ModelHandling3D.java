@@ -1,5 +1,7 @@
 package demo;
 
+import android.util.Log;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -8,15 +10,19 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 
 import controller.CameraController;
@@ -24,8 +30,7 @@ import utils.ColorUtils;
 
 /**
  * This handles the class to render the objects on the screen.
- * 1. Changing the model material color By @{@link ModelHandling3D#changeObjectColor()}
- * 2. Changing the model rotation by {@link ModelHandling3D#changeRotation()}
+ * 1. Changing the model material color By {@link ModelHandling3D#changeObjectColor()}
  * </p>
  *
  * @author saravanakumar.chinra
@@ -41,7 +46,7 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
     private static final String inputFile = "test/box3d.g3dj";
     private final int COLOR = 0;
     private final int POSITION = 1;
-    private final int ROTATION = 3;
+    private final int LIGHTING = 3;
     private final int SCALING = 4;
     private final int CAMERA = 5;
 
@@ -58,15 +63,14 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
     private SpriteBatch batch;
     private BitmapFont font;
     private String selectedOperation = "";
-    private boolean isMovingUp = false;
 
     @Override
     public void create() {
         modelBatch = new ModelBatch();
 
         environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+        environment.set(new ColorAttribute(ColorAttribute.Diffuse, 0.4f, 0.4f, 0.4f, 1f));
+        environment.add(new DirectionalLight().set(0.8f, 0f, 0f, -1f, -0.8f, -0.2f));
 
         cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cameraController = new CameraController(cam);
@@ -92,7 +96,7 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         if (assets.update()) {
-            performAction(CAMERA);
+            performAction(LIGHTING);
         }
 
         modelBatch.begin(cam);
@@ -128,8 +132,13 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
      * This method initiates the operation by the hardcode input.
      *
      * @param type action type.
-     *             <ul>1. Changing Color</ul>
-     *             <ul>2. Changing Position</ul>
+     *             <ol>
+     *             <li>Change Color</li>
+     *             <li>Change Position</li>
+     *             <li>Change Lighting</li>
+     *             <li>Change Scaling</li>
+     *             <li>Change Camera Movements</li>
+     *             </ol>
      */
     private void performAction(int type) {
         switch (type) {
@@ -141,19 +150,17 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
                 selectedOperation = "Change The Position";
                 changeObjectPosition();
                 break;
-            case ROTATION:
-                selectedOperation = "Rotate the View";
-                changeRotation();
+            case LIGHTING:
+                selectedOperation = "Lighting";
+                renderObject();
                 break;
             case SCALING:
                 selectedOperation = "Scaling the view";
-                changeScaling();
                 break;
             case CAMERA:
                 selectedOperation = "Moving Camera Up/Down";
                 renderObject();
                 cameraController.updateCamera();
-                //changeCameraPosition();
                 break;
         }
     }
@@ -166,7 +173,6 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
         modelInstance = new ModelInstance(assets.get(inputFile, Model.class));
         instances.add(modelInstance);
     }
-
 
     /**
      * Changing position by vector
@@ -190,42 +196,6 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
         instances.add(modelInstance);
     }
 
-    /**
-     * Changing object transformation.
-     */
-    private void changeRotation() {
-        instances = new Array<ModelInstance>();
-        modelInstance = new ModelInstance(assets.get(inputFile, Model.class));
-        instances.add(modelInstance);
-    }
-
-    /**
-     * Changing object scaling.
-     */
-    private void changeScaling() {
-        instances = new Array<ModelInstance>();
-        modelInstance = new ModelInstance(assets.get(inputFile, Model.class));
-        instances.add(modelInstance);
-    }
-
-    /**
-     * Moving camera position towards up and Down.
-     */
-    private void changeCameraPosition() {
-        float zCameraPosition = cam.position.y;
-        if (isMovingUp) {
-            zCameraPosition += 0.1;
-            if (zCameraPosition > 20)
-                isMovingUp = false;
-        } else {
-            zCameraPosition -= 0.1;
-            if (zCameraPosition < 1)
-                isMovingUp = true;
-        }
-        cam.position.set(10, zCameraPosition, 10);
-        cam.update();
-    }
-
     @Override
     public boolean keyDown(int keycode) {
         return false;
@@ -244,7 +214,7 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        cameraController.updateCamera();
+        cameraController.changeCameraRotation();
         return false;
     }
 
@@ -260,12 +230,11 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
             colorIterator++;
         else
             colorIterator = 0;
-        return false;
+        return true;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-
         return false;
     }
 
