@@ -1,7 +1,5 @@
 package demo;
 
-import android.util.Log;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -10,19 +8,15 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 
 import controller.CameraController;
@@ -50,16 +44,20 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
     private final int SCALING = 4;
     private final int CAMERA = 5;
 
-
+    /* 3D camera */
     public PerspectiveCamera cam;
     public ModelBatch modelBatch;
     public AssetManager assets;
     public Array<ModelInstance> instances = new Array<ModelInstance>();
     public Environment environment;
     public ModelInstance modelInstance;
+
+    /* Custom controller to handle the camera events */
     CameraController cameraController;
     private int colorIterator = 0;
     private int colorArraySize = 0;
+
+    /* Text rendering on the screen*/
     private SpriteBatch batch;
     private BitmapFont font;
     private String selectedOperation = "";
@@ -96,7 +94,7 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         if (assets.update()) {
-            performAction(LIGHTING);
+            performAction(CAMERA);
         }
 
         modelBatch.begin(cam);
