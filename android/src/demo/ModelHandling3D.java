@@ -168,7 +168,10 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
      */
     private void renderObject() {
         instances = new Array<ModelInstance>();
-        modelInstance = new ModelInstance(assets.get(inputFile, Model.class));
+        Model model = assets.get(inputFile, Model.class);
+
+        modelInstance = new ModelInstance(model);
+
         instances.add(modelInstance);
     }
 

@@ -52,8 +52,12 @@ public class Loading3DScene implements ApplicationListener {
     private Model model;
     private RenderContext renderContext;
 
+    CameraInputController cameraInputController;
+
     @Override
     public void create() {
+
+
 
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -66,8 +70,10 @@ public class Loading3DScene implements ApplicationListener {
         perspectiveCamera.far = 300f;
         perspectiveCamera.update();
 
+        cameraInputController = new CameraInputController(perspectiveCamera);
+
         ModelLoader modelLoader = new G3dModelLoader(new JsonReader());
-        ModelData modelData = modelLoader.loadModelData(Gdx.files.internal("data/invaderscene.g3dj"));
+        ModelData modelData = modelLoader.loadModelData(Gdx.files.internal("data/ship.obj"));
         model = new Model(modelData, new TextureProvider.FileTextureProvider());
 
         NodePart blockPart = model.getNode("ship").parts.get(0);
@@ -80,6 +86,8 @@ public class Loading3DScene implements ApplicationListener {
         renderContext = new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.WEIGHTED, 1));
         shader = new DefaultShader(renderable);
         shader.init();
+
+        Gdx.input.setInputProcessor(cameraInputController);
     }
 
 

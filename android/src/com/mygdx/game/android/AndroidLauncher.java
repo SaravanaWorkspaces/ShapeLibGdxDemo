@@ -6,8 +6,11 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 import demo.Basic3DModel;
+import demo.HumanWalk;
+import demo.Loading3DScene;
 import demo.ModelHandling3D;
-import demo.ShaderTest;
+import demo.Scene2DSampleGroup;
+import demo.SnakeGame;
 import demo.SpriteExample;
 
 public class AndroidLauncher extends AndroidApplication {
@@ -18,6 +21,6 @@ public class AndroidLauncher extends AndroidApplication {
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.useAccelerometer = false;
         config.useCompass = false;
-        initialize(new SpriteExample(), config);
+        initialize(new Basic3DModel(), config);
     }
 }

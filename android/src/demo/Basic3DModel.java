@@ -9,16 +9,21 @@ import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 
 import controller.CameraController;
@@ -40,10 +45,11 @@ public class Basic3DModel extends ApplicationAdapter {
     public Environment environment;
     public PerspectiveCamera cam;
     public ModelBatch modelBatch;
+    Model model;
 
     private Array<ModelInstance> modelInstances;
-
     private CameraInputController cameraController;
+    private String[] meshParts = new String[]{"front", "back", "bottom", "top", "left", "right"};
 
     @Override
     public void create() {
@@ -64,32 +70,61 @@ public class Basic3DModel extends ApplicationAdapter {
 
         modelInstances = new Array<>();
 
-        modelInstances.add(new ModelInstance(modelBuilder.createBox(6f, 6f, 6f,
-                new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-                Usage.Position | Usage.Normal)));
+        modelBuilder.begin();
+        /*modelBuilder.part("box", GL20.GL_TRIANGLES,
+                Usage.Position | Usage.Normal | Usage.TextureCoordinates,
+                new Material(ColorAttribute.createDiffuse(Color.GOLD)))
+                .box(5f, 5f, 5f);*/
 
-      /*  modelInstances.add(new ModelInstance(modelBuilder.createBox(4f, 9f, 4f,
-                new Material(ColorAttribute.createDiffuse(Color.RED)),
-                Usage.Position | Usage.Normal)));
+        long attr = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
 
-        modelInstances.add(new ModelInstance(modelBuilder.createBox(2f, 11f, 2f,
-                new Material(ColorAttribute.createDiffuse(Color.WHITE)),
-                Usage.Position | Usage.Normal)));*/
+        modelBuilder.part(meshParts[0], GL20.GL_TRIANGLES, attr,
+                new Material(TextureAttribute.createDiffuse(new Texture(Gdx.files.internal("badlogic.jpg")))))
+                .rect(-2f, -2f, -2f, -2f, 2f, -2f, 2f, 2f, -2, 2f, -2f, -2f, 0, 0, -1);
+
+        modelBuilder.part(meshParts[1], GL20.GL_TRIANGLES, attr,
+                new Material(ColorAttribute.createDiffuse(Color.WHITE)))
+                .rect(-2f, 2f, 2f, -2f, -2f, 2f, 2f, -2f, 2f, 2f, 2f, 2f, 0, 0, 1);
+
+        modelBuilder.part(meshParts[2], GL20.GL_TRIANGLES, attr,
+                new Material(TextureAttribute.createDiffuse(new Texture(Gdx.files.internal("badlogic.jpg")))))
+                .rect(-2f, -2f, 2f, -2f, -2f, -2f, 2f, -2f, -2f, 2f, -2f, 2f, 0, -1, 0);
+
+        modelBuilder.part(meshParts[3], GL20.GL_TRIANGLES, attr,
+                new Material(ColorAttribute.createDiffuse(Color.RED)))
+                .rect(-2f, 2f, -2f, -2f, 2f, 2f, 2f, 2f, 2f, 2f, 2f, -2f, 0, 1, 0);
+
+        modelBuilder.part(meshParts[4], GL20.GL_TRIANGLES, attr,
+                new Material(TextureAttribute.createDiffuse(new Texture(Gdx.files.internal("snakehead.png")))))
+                .rect(-2f, -2f, 2f, -2f, 2f, 2f, -2f, 2f, -2f, -2f, -2f, -2f, -1, 0, 0);
+
+        modelBuilder.part(meshParts[5], GL20.GL_TRIANGLES, attr,
+                new Material(ColorAttribute.createDiffuse(Color.YELLOW)))
+                .rect(2f, -2f, -2f, 2f, 2f, -2f, 2f, 2f, 2f, 2f, -2f, 2f, 1, 0, 0);
+
+        model = modelBuilder.end();
+
+        modelInstances.add(new ModelInstance(model));
 
         cameraController = new CameraInputController(cam);
         Gdx.input.setInputProcessor(cameraController);
 
     }
 
+
+
     @Override
     public void render() {
-        new FPSLogger().log();
-        //Log.d(TAG, "Tick " + );
 
         cameraController.update();
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+
+        float[] vertex = new float[model.meshParts.get(0).mesh.getVertexSize()];
+        model.meshParts.get(0).mesh.getVertices(vertex);
+
 
         modelBatch.begin(cam);
         modelBatch.render(modelInstances, environment);
