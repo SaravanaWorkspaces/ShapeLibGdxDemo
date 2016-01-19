@@ -8,6 +8,7 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import demo.Basic3DModel;
 import demo.HumanWalk;
 import demo.Loading3DScene;
+import demo.MeshColorTexture;
 import demo.ModelHandling3D;
 import demo.Scene2DSampleGroup;
 import demo.SnakeGame;
