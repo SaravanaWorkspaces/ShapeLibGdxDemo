@@ -37,7 +37,7 @@ public class ModelHandling3D extends Game implements ApplicationListener, InputP
 
     private static final String TAG = "ModelHandling3D";
 
-    private static final String inputFile = "test/box3d.g3dj";
+    private static final String inputFile = "test/boxanim.g3dj";
     private final int COLOR = 0;
     private final int POSITION = 1;
     private final int LIGHTING = 3;
