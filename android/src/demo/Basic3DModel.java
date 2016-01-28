@@ -137,6 +137,7 @@ public class Basic3DModel extends ApplicationAdapter {
                 new Material(TextureAttribute.createDiffuse(new Texture(Gdx.files.internal("char3.jpg")))))
                 .rect(right_vector[0], right_vector[1], right_vector[2], right_vector[3], right_vector[4]);
 
+        // Add Separate Model
 
         model = modelBuilder.end();
 

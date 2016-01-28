@@ -5,8 +5,12 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
+import demo.Basic3DModel;
 import demo.ChartImplementation;
+import demo.LibGdxShapes;
+import demo.MeshCreation;
 import demo.ShaderTest;
+import demo.SpriteExample;
 
 public class AndroidLauncher extends AndroidApplication {
     @Override
@@ -16,6 +20,6 @@ public class AndroidLauncher extends AndroidApplication {
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.useAccelerometer = false;
         config.useCompass = false;
-        initialize(new ChartImplementation(), config);
+        initialize(new Basic3DModel(), config);
     }
 }
