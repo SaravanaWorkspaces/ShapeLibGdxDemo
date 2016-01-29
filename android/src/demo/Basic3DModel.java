@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
@@ -107,10 +108,12 @@ public class Basic3DModel extends ApplicationAdapter {
 
         long attr = Usage.Position | Usage.Normal |Usage.TextureCoordinates;
 
-        modelBuilder.node().id = meshParts[0];
+        Node node = modelBuilder.node();
+        node.id = meshParts[0];
         modelBuilder.part(meshParts[0], GL20.GL_TRIANGLES, attr,
                 new Material(TextureAttribute.createDiffuse(new Texture(Gdx.files.internal("char1.png")))))
                 .rect(front_vector[0], front_vector[1], front_vector[2], front_vector[3], front_vector[4]);
+
 
         modelBuilder.node().id = meshParts[1];
         modelBuilder.part(meshParts[1], GL20.GL_TRIANGLES, attr,
