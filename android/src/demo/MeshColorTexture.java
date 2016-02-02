@@ -55,15 +55,6 @@ public class MeshColorTexture implements ApplicationListener {
 
         mesh = createFullScreenQuad();
 
-       /* mesh.setVertices(new float[]{
-                -0.001f, -0.5f, 0,
-                 0.5f,   -0.5f, 0,
-                 0.0f,    0.5f, 0,
-        });*/
-
-       //mesh.setIndices(new short[]{0, 1, 2});
-
-
     }
 
     @Override

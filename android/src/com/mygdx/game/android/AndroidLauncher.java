@@ -7,8 +7,11 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 import demo.ArcCreation;
 import demo.Basic3DModel;
+import demo.ChartImplementation;
+import demo.ChartPiece;
 import demo.MeshColorTexture;
 import demo.ModelClassExploring;
+import demo.ShaderLesson1;
 
 public class AndroidLauncher extends AndroidApplication {
     @Override
@@ -18,6 +21,6 @@ public class AndroidLauncher extends AndroidApplication {
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.useAccelerometer = false;
         config.useCompass = false;
-        initialize(new MeshColorTexture(), config);
+        initialize(new ChartPiece(), config);
     }
 }
